@@ -1,4 +1,6 @@
-import { createMachine, assign } from 'xstate';
+import { createMachine } from 'xstate';
+import { actions, makeResetAction } from './actions';
+import { guards } from './guards';
 
 type GameEvent = 
   | { type: "MOVE_UP" }
@@ -37,32 +39,6 @@ interface GameSchema {
   }
 }
 
-const decreaseMoves = assign<GameContext>({
-  movesLeft: ({ movesLeft }) => movesLeft - 1
-});
-const assignUp = assign<GameContext>({
-  y: ({y}) => y - 1,
-});
-const assignDown = assign<GameContext>({
-  y: ({y}) => y + 1
-});
-const assignLeft = assign<GameContext>({
-  x: ({x}) => x - 1
-});
-const assignRight = assign<GameContext>({
-  x: ({x}) => x + 1
-});
-
-const won = ({x, y, cells}: GameContext) => (cells[y][x]?.type === 'finish');
-const loose = ({ movesLeft }: GameContext) => movesLeft === 0;
-
-const isWalkable = ({ cells }: GameContext) => (x: number, y: number) => (cells[y][x]?.type !== 'wall');
-
-const canMoveUp = (context: GameContext) => context.y > 0 && isWalkable(context)(context.x, context.y - 1);
-const canMoveDown = (context: GameContext) => context.y < context.maxY - 1 && isWalkable(context)(context.x, context.y + 1);
-const canMoveLeft = (context: GameContext) => context.x > 0 && isWalkable(context)(context.x - 1, context.y);
-const canMoveRight = (context: GameContext) => context.x < context.maxX - 1 && isWalkable(context)(context.x + 1, context.y);
-
 export interface initialContext {
   x: number;
   y: number;
@@ -73,11 +49,7 @@ export interface initialContext {
 }
 
 export const createGameMachine = (initial: initialContext) => {
-  const reset = assign({
-    x: () => initial.x,
-    y: () => initial.y,
-    movesLeft: () => initial.moves,
-  });
+  const reset = makeResetAction(initial);
 
   return createMachine<GameContext, GameEvent, GameSchema>({
     initial: "playing",
@@ -92,25 +64,25 @@ export const createGameMachine = (initial: initialContext) => {
     states: {
       playing: {
         on: {
-          MOVE_UP: { cond: canMoveUp, actions: assignUp, target: "moving" },
-          MOVE_DOWN: { cond: canMoveDown, actions: assignDown, target: "moving" },
-          MOVE_LEFT: { cond: canMoveLeft, actions: assignLeft, target: "moving" },
-          MOVE_RIGHT: { cond: canMoveRight, actions: assignRight, target: "moving" },
-          RESET: { actions: reset, target: "playing" },
+          MOVE_UP: { cond: "canMoveUp", actions: "assignUp", target: "moving" },
+          MOVE_DOWN: { cond: "canMoveDown", actions: "assignDown", target: "moving" },
+          MOVE_LEFT: { cond: "canMoveLeft", actions: "assignLeft", target: "moving" },
+          MOVE_RIGHT: { cond: "canMoveRight", actions: "assignRight", target: "moving" },
+          RESET: { actions: "reset", target: "playing" },
         }
       },
       moving: {
-        entry: decreaseMoves,
+        entry: "decreaseMoves",
         always: [
-          { target: 'win', cond: won },
-          { target: 'loss', cond: loose },
+          { target: 'win', cond: "won" },
+          { target: 'loss', cond: "loose" },
           { target: 'playing' }
         ]
       },
       win: {
         on: {
           RESET: {
-            actions: reset,
+            actions: "reset",
             target: "playing",
           }
         }
@@ -118,11 +90,17 @@ export const createGameMachine = (initial: initialContext) => {
       loss: {
         on: {
           RESET: {
-            actions: reset,
+            actions: "reset",
             target: "playing",
           }
         }
       }
     }
+  }, {
+    actions: {
+      reset,
+      ...actions,
+    },
+    guards
   })
 };
