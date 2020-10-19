@@ -1,38 +1,94 @@
+:root {
+  --x: 0;
+  --y: 0;
+  --game-columns: 5;
+  --board-width: 600px;
+  --cell-margin: 5px;
+  --cell-size: calc((var(--board-width) / var(--game-columns)));
+}
+
+html {
+  box-sizing: border-box;
+  color: #343a40;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header {
+  margin: 0.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.status-bar {
+  margin: auto;
+  padding: 0 10px;
+  width: var(--board-width);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
 }
 
-.App-link {
-  color: #61dafb;
+.status-bar > span.win {
+  color: #00a896;
+  font-weight: bold;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.status-bar > span.loss {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.board {
+  position: relative;
+  margin: auto;
+  width: var(--board-width);
+  display: grid;
+  grid-template-columns: repeat(var(--game-columns), 1fr);
+}
+
+.board > .cell {
+  background: #cbf3f0;
+  border-radius: 8px;
+  margin: var(--cell-margin);
+}
+
+.board > .cell::before {
+  content: '';
+  padding-bottom: 100%;
+  display: block;
+}
+
+.board > .start {
+  background-color: #ffe66d;
+}
+
+.board > .wall {
+  background-color: #00a896;
+}
+
+.board > .finish {
+  background-color: #ff6b6b;
+}
+
+.player {
+  position: absolute;
+  background: #07689f;
+  border-radius: 50%;
+  margin: var(--cell-margin);
+  height: calc(var(--cell-size) - calc(var(--cell-margin) * 4));
+  width: calc(var(--cell-size) - calc(var(--cell-margin) * 4));
+  z-index: 10;
+  left: var(--cell-margin);
+  top: var(--cell-margin);
+  opacity: 0.85;
+  transform: translate(
+    calc(var(--x) * (var(--cell-size))),
+    calc(var(--y) * (var(--cell-size)))
+  );
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
