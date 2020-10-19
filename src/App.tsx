@@ -42,7 +42,7 @@ function App() {
   }, [context.maxX, context.x, context.y]);
 
   return (
-    <div className="App">
+    <div className="App" data-testid="app">
       <Header text="Labyrinth Challenge" />
       <Board cells={context.cells} />
       <StatusBar
