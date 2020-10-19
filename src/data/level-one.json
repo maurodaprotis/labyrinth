@@ -1,0 +1,94 @@
+{
+  "x": 0,
+  "y": 0,
+  "maxX": 5,
+  "maxY": 5,
+  "moves": 20,
+  "cells": {
+    "0": {
+      "0": {
+        "type": "start"
+      },
+      "1": {
+        "type": "floor"
+      },
+      "2": {
+        "type": "floor"
+      },
+      "3": {
+        "type": "floor"
+      },
+      "4": {
+        "type": "floor"
+      }
+    },
+    "1": {
+      "0": {
+        "type": "wall"
+      },
+      "1": {
+        "type": "wall"
+      },
+      "2": {
+        "type": "wall"
+      },
+      "3": {
+        "type": "floor"
+      },
+      "4": {
+        "type": "floor"
+      }
+    },
+    "2": {
+      "0": {
+        "type": "floor"
+      },
+      "1": {
+        "type": "floor"
+      },
+      "2": {
+        "type": "floor"
+      },
+      "3": {
+        "type": "floor"
+      },
+      "4": {
+        "type": "wall"
+      }
+    },
+    "3": {
+      "0": {
+        "type": "floor"
+      },
+      "1": {
+        "type": "wall"
+      },
+      "2": {
+        "type": "wall"
+      },
+      "3": {
+        "type": "wall"
+      },
+      "4": {
+        "type": "finish"
+      }
+    },
+    "4": {
+      "0": {
+        "type": "floor"
+      },
+      "1": {
+        "type": "floor"
+      },
+      "2": {
+        "type": "floor"
+      },
+      "3": {
+        "type": "floor"
+      },
+      "4": {
+        "type": "floor"
+      }
+    }
+  }
+}
